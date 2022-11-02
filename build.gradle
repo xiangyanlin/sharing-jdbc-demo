@@ -1,0 +1,40 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'com.xaingyanlin.cn'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    maven {
+        url 'https://maven.aliyun.com/repository/public/'
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'junit:junit:4.13.1'
+
+    //数据库持久层
+    implementation 'mysql:mysql-connector-java:8.0.28'
+//    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.7.5'
+    implementation 'com.alibaba:druid:1.2.10'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.4.2'
+
+    // https://mvnrepository.com/artifact/org.apache.shardingsphere/sharding-jdbc-spring-boot-starter
+    implementation 'org.apache.shardingsphere:sharding-jdbc-spring-boot-starter:4.1.1'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor  'org.projectlombok:lombok:1.18.24'
+    compileOnly 'com.alibaba:fastjson:2.0.17'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

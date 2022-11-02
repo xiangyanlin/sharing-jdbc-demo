@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xaingyanlin.cn.sharedingjdbcdemo.mapper.UserMapper">
+
+    <resultMap type="com.xaingyanlin.cn.sharedingjdbcdemo.entity.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+        <result property="profession" column="profession" jdbcType="VARCHAR"/>
+        <result property="education" column="education" jdbcType="VARCHAR"/>
+        <result property="houseNum" column="house_num" jdbcType="INTEGER"/>
+        <result property="identify" column="identify" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select id,
+               role_id,
+               user_name,
+               password,
+               avatar,
+               email,
+               mobile,
+               sex,
+               real_name,
+               id_card,
+               profession,
+               education,
+               house_num,
+               identify,
+               create_time,
+               remark
+        from user
+        where id = #{id}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+            <if test="realName != null and realName != ''">
+                and real_name = #{realName}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and id_card = #{idCard}
+            </if>
+            <if test="profession != null and profession != ''">
+                and profession = #{profession}
+            </if>
+            <if test="education != null and education != ''">
+                and education = #{education}
+            </if>
+            <if test="houseNum != null">
+                and house_num = #{houseNum}
+            </if>
+            <if test="identify != null and identify != ''">
+                and identify = #{identify}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into user(role_id, user_name, password, avatar, email, mobile, sex, real_name, id_card, profession,
+                         education, house_num, identify, create_time, remark)
+        values (#{roleId}, #{userName}, #{password}, #{avatar}, #{email}, #{mobile}, #{sex}, #{realName}, #{idCard},
+                #{profession}, #{education}, #{houseNum}, #{identify}, #{createTime}, #{remark})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into user(role_id, user_name, password, avatar, email, mobile, sex, real_name, id_card, profession,
+        education, house_num, identify, create_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.roleId}, #{entity.userName}, #{entity.password}, #{entity.avatar}, #{entity.email},
+            #{entity.mobile}, #{entity.sex}, #{entity.realName}, #{entity.idCard}, #{entity.profession},
+            #{entity.education}, #{entity.houseNum}, #{entity.identify}, #{entity.createTime}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into user(role_id, user_name, password, avatar, email, mobile, sex, real_name, id_card, profession,
+        education, house_num, identify, create_time, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.roleId}, #{entity.userName}, #{entity.password}, #{entity.avatar}, #{entity.email},
+            #{entity.mobile}, #{entity.sex}, #{entity.realName}, #{entity.idCard}, #{entity.profession},
+            #{entity.education}, #{entity.houseNum}, #{entity.identify}, #{entity.createTime}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        role_id = values(role_id),
+        user_name = values(user_name),
+        password = values(password),
+        avatar = values(avatar),
+        email = values(email),
+        mobile = values(mobile),
+        sex = values(sex),
+        real_name = values(real_name),
+        id_card = values(id_card),
+        profession = values(profession),
+        education = values(education),
+        house_num = values(house_num),
+        identify = values(identify),
+        create_time = values(create_time),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="mobile != null and mobile != ''">
+                mobile = #{mobile},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="realName != null and realName != ''">
+                real_name = #{realName},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                id_card = #{idCard},
+            </if>
+            <if test="profession != null and profession != ''">
+                profession = #{profession},
+            </if>
+            <if test="education != null and education != ''">
+                education = #{education},
+            </if>
+            <if test="houseNum != null">
+                house_num = #{houseNum},
+            </if>
+            <if test="identify != null and identify != ''">
+                identify = #{identify},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from user
+        where id = #{id}
+    </delete>
+
+</mapper>
+

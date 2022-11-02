@@ -1,0 +1,79 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: sharding-jdbc-demo
+  # 配置真实数据源
+  shardingsphere:
+    datasource:
+      names: ds-0,ds-1
+      # 配置第1个数据源
+      ds-0:
+        # 数据库连接池类名称
+        type: com.zaxxer.hikari.HikariDataSource
+        # 数据库驱动类名
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        # 数据库url连接
+        jdbc-url: jdbc:mysql://124.221.66.154:3306/sharding?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+        #数据库用户名
+        username: root
+        # 数据库密码
+        password: '@Xiangyan123456'
+      # 配置第2个数据源
+      ds-1:
+        # 数据库连接池类名称
+        type: com.zaxxer.hikari.HikariDataSource
+        # 数据库驱动类名
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        # 数据库url连接
+        jdbc-url: jdbc:mysql://localhost:3306/sharding?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+        #数据库用户名
+        username: root
+        # 数据库密码
+        password: '@Xiangyanlin'
+    # 配置 user 表规则
+    sharding:
+      tables:
+        user:
+          actual-data-nodes: ds-$->{0..1}.user_$->{0..100}
+          # 配置分表策略 主键取模 0在0表 1在1表
+          table-strategy:
+            inline:
+              #分片列名称
+              sharding-column: id
+              #分片算法行表达式
+              algorithm-expression: user_$->{id % 100}
+          # 主键策略 雪花算法
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+      # 配置分库策略 主键取模0在0库 1在1库
+      default-database-strategy:
+        inline:
+          sharding-column: id
+          #分片算法行表达式
+          algorithm-expression: ds-$->{id % 2}
+    # 打开sql控制台输出日志
+    props:
+      sql:
+        show: true
+
+  main:
+    allow-bean-definition-overriding: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+mybatis-plus:
+  type-aliases-package: com.calvin.sharding.pojo
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    jdbc-type-for-null: null
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+  global-config:
+    banner: false
+
